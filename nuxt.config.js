@@ -51,7 +51,7 @@ export default {
     strategies: {
       local: {
         token: {
-          property: 'accesToken',
+          property: 'accessToken',
           global: true,
           // required: true,
           // type: 'Bearer'
@@ -60,7 +60,7 @@ export default {
           login: {
             url: 'auth/login',
             method: 'post',
-            propertyName: 'data.accesToken'
+            propertyName: 'data.data.accessToken'
           },
           user: {
             url: 'user/profile',
@@ -75,9 +75,9 @@ export default {
     resetOnError: true
   },
 
-  router: {
-    middleware: ['auth']
-  },
+  // router: {
+  //   middleware: ['auth']
+  // },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

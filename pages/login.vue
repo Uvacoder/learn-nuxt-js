@@ -10,11 +10,11 @@
       <div class="flex w-screen justify-center">
         <div class="w-1/2 mx-auto py-6 sm:px-6 lg:px-8">
           <Alert v-if="alert" :message="alert" />
-          <div class="mt-8 rounded overflow-hidden shadow-lg">
+          <div class="mt-5 rounded overflow-hidden shadow-lg">
             <div class="px-6 py-4 bg-gray-800">
               <div class="font-bold text-xl text-white">Login</div>
             </div>
-            <form method="post" @submit.prevent="login">
+            <form method="post" @submit.prevent="actionLogin">
               <div class="px-6 pb-2">
                 <div class="mt-8 w-100">
                   <div class="grid grid-cols-1 gap-6">
@@ -44,7 +44,9 @@
 
 <script>
   // eslint-disable-next-line no-unused-vars
-  import { mapMutations } from 'vuex'
+  import {
+    mapMutations
+  } from 'vuex'
 
   import Alert from '~/components/partials/Alert.vue'
   import Navigation from '~/components/main/Navigation.vue'
@@ -54,31 +56,62 @@
       Navigation,
       Alert,
     },
+    auth: false,
     data() {
       return {
         username: null,
         password: null,
-        alert: false,
+        alert: null,
       }
     },
-    // mounted() {
-    //   this.fetchSomething()
-    // },
+    mounted() {
+      if (this.$auth.loggedIn) {
+          this.$router.push('/dashboard')
+      }
+    },
     methods: {
       ...mapMutations(['SET_IS_AUTH']),
-      login: () => {
+      actionLogin() {
         this.$auth.loginWith('local', {
-                data: {
-                    username: this.username,
-                    password: this.password
-                }
-            }).then(() => {
-                // JIKA BERHASIL, KITA SET TRUE IS AUTH-NYA
-                this.SET_IS_AUTH(true)
-                // LALU REDIRECT KE HALAMAN UTAMA / DAHSBOARD
-                this.$router.push('/')
-            })
-      },
+          data: {
+            username: this.username,
+            password: this.password
+          }
+        }).then((result) => {
+          console.log(result)
+          this.alert = null
+          this.SET_IS_AUTH(true)
+          this.$router.push('/dashboard')
+
+        }).catch((err) => {
+          this.alert = err.response.data.msg
+        });
+        // try {
+        //   this.$auth.loginWith('local', {
+        //     data: {
+        //       username: this.username,
+        //       password: this.password
+        //     }
+        //   })
+        //   this.SET_IS_AUTH(true)
+        //   this.$router.push('/')
+        // } catch (e) {
+        //   console.log(e);
+        // }
+      }
+      // actionLogin: () => {
+      //   this.$auth.loginWith('local', {
+      //     data: {
+      //       username: this.username,
+      //       password: this.password
+      //     }
+      //   }).then(() => {
+      //     // JIKA BERHASIL, KITA SET TRUE IS AUTH-NYA
+      //     this.SET_IS_AUTH(true)
+      //     // LALU REDIRECT KE HALAMAN UTAMA / DAHSBOARD
+      //     this.$router.push('/')
+      //   })
+      // },
     }
   }
 
